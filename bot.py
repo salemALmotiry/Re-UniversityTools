@@ -1,0 +1,245 @@
+from datetime import datetime
+from re import T, escape
+from typing import List
+import telebot
+import os
+from telebot import *
+from prettytable import PrettyTable
+from prettytable import from_db_cursor
+from prettytable.prettytable import ALL
+from prettytable import *
+import message
+from PIL import Image
+import CourseInfo
+import db
+import encode
+TOKEN = os.environ.get('API_KEY')
+bot = telebot.TeleBot(TOKEN)
+
+
+
+def active(target):
+    
+    f = open('active.txt','r').read()
+    f = re.split(',',f)
+    return bool( list(( filter(   lambda item : item == str(target)    ,f)    )))
+     
+
+ 
+@bot.message_handler(commands=['start'])
+def start(msg):
+       
+        if active(msg.chat.id) == True : 
+           b = BotHandler()
+           b.ShowMethods(msg)
+           
+
+ 
+@bot.message_handler(commands=['active'])
+def act(msg):          
+           if msg.chat.id==340095920:
+                   bot.register_next_step_handler(msg,ActivateID)
+                   
+def ActivateID(msg):   
+        f = open('active.txt','a')
+        f.write(',%s'%msg.text)
+        bot.reply_to(msg,'تم التفعيل')
+
+
+@bot.message_handler(commands=['myid'])
+def myid(msg):  
+         bot.reply_to(msg,msg.chat.id)
+ 
+
+
+@bot.message_handler(commands=['Schedule'])
+def Schedule(msg):
+    
+    chid = msg.chat.id
+    d = db.data()
+    calender = d.retrunCalemdar(chid)
+    bot.send_photo(chid, calender)
+    del d
+ 
+
+@bot.message_handler(commands=['abs']) # done
+def abs(msg):
+   
+
+    bo = BotHandler()
+    bo.NecessaryInformation(msg,'abs')
+    del bo
+ 
+
+@bot.message_handler(commands=['greads']) # done
+def greads(msg):
+   
+
+    bo = BotHandler()
+    bo.NecessaryInformation(msg,'greads')
+    del bo
+
+
+
+
+@bot.message_handler(commands=['final'])
+def final(msg):
+    chid = msg.chat.id  # chat id
+    d = db.data()  # object from database class
+    
+    bot.send_message(msg.chat.id,"قيد التنفيذ")
+    d.finalDate(chid)  # gets final dates exam data from data base class
+    image = Image.open('%sc.png'%chid)
+    image.load()
+    bot.send_photo(chid,image)
+    os.remove('%sc.png'%chid)
+    os.remove('%sc.html'%chid)
+    del d
+
+
+class BotHandler():
+    def __init__(self):
+        self.info = list()
+  
+    def handler(self,msg,user,pas,Type):
+          
+            
+                 
+            self.Qu = CourseInfo.qu()
+            
+            if Type =='abs':
+                self.img = self.Qu.absences(user,pas)
+                bot.send_photo(msg.chat.id, self.img)  # send absences img
+            if Type =='greads':
+                self.img = self.Qu.Greads(user,pas)
+                bot.send_photo(msg.chat.id, self.img)  # send absences img
+            
+            
+            
+    def NecessaryInformation(self,msg,Type):
+            
+             
+              
+               
+            self.d= db.data()  # object of data base class
+            self.method = self.d.getinfo(msg.chat.id)  # gets info form sing in
+            if self.method == '1':
+               self.info=  self.d.getUserinfo(msg.chat.id)
+               self.handler(msg,self.info[0],self.info[1],Type)
+            else: 
+                    bot.send_message(msg.chat.id,'أدخل رمز الدخول')
+                    bot.register_next_step_handler(msg,self.secondM,Type)
+                    
+    def secondM(self,msg,Type):
+                key = msg.text
+                print(key)
+                hash = encode.hash1(key)
+                self.d= db.data()
+                print(hash)
+                if hash != self.d.getKey(msg.chat.id):
+                    
+                        bot.send_message(msg.chat.id,'أعد ادخال الرمز')
+                        bot.register_next_step_handler(msg,self.NecessaryInformation,Type)
+                        return
+                        
+             
+                self.info= self.d.getUserinfo(msg.chat.id,key)
+                self.handler(msg,self.info[0],self.info[1],Type)
+
+
+                                 
+    def ShowMethods(self,msg):
+         
+                self.markup = types.ReplyKeyboardMarkup()
+                self.methodOne = types.KeyboardButton('1')
+                self.methodTwo = types.KeyboardButton('2')
+                self.methodThree = types.KeyboardButton('3')
+                self.markup.row(self.methodOne, self.methodTwo, self.methodThree)
+                bot.send_message(msg.chat.id, message.loginMsg, reply_markup=self.markup)
+                bot.register_next_step_handler(msg,self.methods,self.markup)
+                
+
+              
+    def methods(self, msg, markup):
+            self.method = msg.text  # method
+          
+            if self.method not in ['1','2','3']:
+                    bot.reply_to(msg,'أعد ادخال الرقم')
+                    bot.register_next_step_handler(msg,self.methods,markup)
+                    return
+            
+            markup = types.ReplyKeyboardRemove()
+            bot.send_message(msg.chat.id, "ادخل الرقم الجامعي", reply_markup=markup)
+            bot.register_next_step_handler(msg, self.user, self.method)
+        
+
+    def user(self, msg, method):
+            
+            bot.send_message(msg.chat.id, 'ارسل الرقم السري')
+            bot.register_next_step_handler(msg, self.password, msg.text, method)
+   
+    def password(self, msg, user, method):
+   
+        purePassword = msg.text
+        self.chid = msg.chat.id
+        self.uoload = db.data()
+        self.p = CourseInfo.qu()
+       
+        try :  
+            bot.send_message(self.chid, 'يتم التحقق من صحة البيانات')
+            self.course = self.p.getsCourses(user,purePassword)
+            
+        except Exception:
+                        self.p.clo()
+                        bot.send_message(self.chid, 'الرقم الجامعي او كلمة السر تم أدخال أحدهما بشكل خاطئ تأكد من البيانات المرسلة.')
+                        bot.send_message(self.chid, 'أدخل الرقم الجامعي')
+                        bot.register_next_step_handler(msg, self.user,method)
+                        return
+
+        bot.send_message(self.chid, 'تم التحقق من صحة البيانات')    
+        if method == '1':
+                   
+                bot.send_message(self.chid, 'يتم اعداد البوت انتظر')
+        
+                self.info =(user,msg.text)
+        
+                self.pas = encode.encode1(self.info[1])
+                self.uoload.insertNewUser(self.chid, self.info[0], '1', self.pas, 'none')
+                self.uoload.insertCoursesIntoTable(self.course,self.chid,self.info[0]) 
+                bot.send_message(self.chid, "تم الأنتهاء من أعداد البوت تستطيع استخدامه ")
+                
+             
+                          
+                   
+                 
+                    
+        if method == '2':
+            
+            bot.send_message(self.chid,"ارسل رمز لفك التشفير سيتم طلبه بدلاََ من كلمة السر")
+            bot.register_next_step_handler(msg,self.secondMethod,user,purePassword, self.course)
+        if method == '3':
+                    bot.send_message(self.chid, 'يتم اعداد البوت انتظر')
+                   
+                    self.uoload.insertNewUser(self.chid, user, '3', 'none', 'none')
+                    self.uoload.insertCoursesIntoTable(self.course,self.chid,user)
+                    bot.send_message(self.chid, "تم الأنتهاء من أعداد البوت أستخدامة ")
+            
+   
+    def secondMethod(self,msg,user,pas,courses):
+       self.uoload = db.data()
+       self.hash = encode.hash1(msg.text)
+       
+       self.pas1 = encode.encode1(pas,msg.text) 
+       
+       bot.send_message(self.chid, 'يتم اعداد البوت انتظر')
+                
+       self.uoload.insertNewUser(self.chid, user, '2', self.pas1, self.hash)
+       
+      
+       self.uoload.insertCoursesIntoTable(courses,self.chid,user)
+       bot.send_message(self.chid, "تم الأنتهاء من أعداد البوت تستطيع استخدامه ")
+   
+   
+    
+   
+bot.polling()
