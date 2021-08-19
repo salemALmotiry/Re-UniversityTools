@@ -401,5 +401,14 @@ class BotHandler():
         bot.register_next_step_handler(message, self.resetRate)
         
     
+if __name__ == "__main__":    
    
-bot.polling()
+   
+    while True:
+        try:
+            bot.polling(none_stop=True)
+            # ConnectionError and ReadTimeout because of possible timout of the requests library
+            # maybe there are others, therefore Exception
+        except Exception:
+            time.sleep(7)
+            print("there is erorr")
