@@ -161,6 +161,7 @@ class gpaUser:
            
             self.gpa['gpaKnow'].append(g1)
             self.gpa['gpaKnow'].append(pp)
+            #_________________________
             
             p1 = str(round( ( x+ float(g[1]) ) , 3  ) )
             pp = self.tg(gnew,tG)
@@ -171,7 +172,7 @@ class gpaUser:
            
             self.gpa['gpanew'].append( g2)
             self.gpa['gpanew'].append( pp)
-            
+            #__________________________
             pp = self.tg(term,tG)
             self.gpa['gpaTerm'].append( x)
             self.gpa['gpaTerm'].append(tt)
@@ -204,14 +205,5 @@ class gpaUser:
 
 
 
-tG = {4.5:'ممتاز',  
-                  3.75:'جيد جداََ'
-                  ,2.75:'جيد'
-                  ,2 : 'مقبول'}
-m = 4.49
 
-for x in tG :
-    if m >=x :
-        print(tG[x])
-        break
     
