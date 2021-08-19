@@ -52,7 +52,7 @@ def myid(msg):
  
 
 
-@bot.message_handler(commands=['Schedule'])
+@bot.message_handler(commands=['schedule'])
 def Schedule(msg):
     
     chid = msg.chat.id
@@ -62,12 +62,12 @@ def Schedule(msg):
     del d
  
 
-@bot.message_handler(commands=['abs']) # done
+@bot.message_handler(commands=['absence']) # done
 def abs(msg):
    
 
     bo = BotHandler()
-    bo.NecessaryInformation(msg,'abs')
+    bo.NecessaryInformation(msg,'absence')
     del bo
  
 
@@ -125,7 +125,7 @@ class BotHandler():
                  
             self.Qu = CourseInfo.qu()
             self.d = db.data()
-            if Type =='abs':
+            if Type =='absence':
                 self.img = self.Qu.absences(user,pas)
                 bot.send_photo(msg.chat.id, self.img)  # send absences img
             if Type =='greads':
