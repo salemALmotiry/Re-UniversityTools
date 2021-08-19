@@ -149,7 +149,7 @@ class BotHandler():
     def handler(self,msg,user,pas,Type):
           
             
-                 
+            bot.reply_to(msg,'قيدالتنفيذ')
             self.Qu = CourseInfo.qu()
             self.d = db.data()
             if Type =='absence':
@@ -401,6 +401,7 @@ class BotHandler():
         bot.register_next_step_handler(message, self.resetRate)
         
     
+
 if __name__ == "__main__":    
    
    

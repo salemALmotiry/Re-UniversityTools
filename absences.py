@@ -127,7 +127,7 @@ class gpaUser:
                         
             for x in t :
                 if p >=x :
-                     return (tG[x])
+                     return (t[x])
                     
     
 
