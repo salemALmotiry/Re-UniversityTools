@@ -80,6 +80,8 @@ class qu :
             self.driver.execute_script("window.scrollTo(0, window.scrollY + 340)")
 
             self.element = self.driver.find_element_by_css_selector("#myForm").screenshot('{}.png'.format(user))
+            self.driver.close()
+
             return self.course
    
     def absences(self,user,pas):
@@ -91,6 +93,8 @@ class qu :
                 time.sleep(0.4)
                 self.e = self.driver.find_element_by_css_selector('body > div.intrPage.main > div.container > div.content > div.sysContent.col-sm-9 > table > tbody > tr:nth-child(3)').screenshot_as_png
                 self.image = Image.open(io.BytesIO(self.e))
+                self.driver.close()
+
                 return self.image
     
     def Greads(self,user,pas):
@@ -102,6 +106,7 @@ class qu :
                 time.sleep(0.4)
                 self.e = self.driver.find_element_by_css_selector('body > div.intrPage.main > div.container > div.content > div.sysContent.col-sm-9 > table > tbody > tr:nth-child(3)').screenshot_as_png
                 self.image = Image.open(io.BytesIO(self.e))
+                self.driver.close()
                 return self.image
             
    

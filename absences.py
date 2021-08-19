@@ -176,7 +176,7 @@ class gpaUser:
             # time.sleep(0.5)
             self.ggpa = self.gg(cou,self.GPAInfo)
             # # removeC(cou,'MATH329')
-            # self.driver.close()
+            self.driver.close()
             return self.ggpa
             
 

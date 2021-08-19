@@ -244,7 +244,6 @@ class BotHandler():
             self.course = self.p.getsCourses(user,purePassword)
             
         except Exception:
-                        self.p.clo()
                         bot.send_message(self.chid, 'الرقم الجامعي او كلمة السر تم أدخال أحدهما بشكل خاطئ تأكد من البيانات المرسلة.')
                         bot.send_message(self.chid, 'أدخل الرقم الجامعي')
                         bot.register_next_step_handler(msg, self.user,method)
