@@ -264,7 +264,13 @@ class data:
 
 
 
-
+    def uesrActive(self,id):
+        self._connect()
+        self.cursor= self.connection.cursor()
+        self.sql = "SELECT EXISTS(SELECT chat_id FROM users WHERE chat_id = '{}') as truth;".format(id)
+        self.cursor.execute(self.sql)
+        return self.cursor.fetchall()[0][0]
+        
     def retrunids(self,chid):
 
         self.r = self.importCourse(chid)
@@ -508,3 +514,4 @@ class data:
 # y = x.split('[')
 
 # print(y[1].replace(']',''))
+

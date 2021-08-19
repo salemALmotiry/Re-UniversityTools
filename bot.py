@@ -28,8 +28,9 @@ def active(target):
  
 @bot.message_handler(commands=['start'])
 def start(msg):
-       
-        if active(msg.chat.id) == True : 
+        d = db.data()  # create object from database class
+        q =  d.uesrActive(msg.chat.id)
+        if active(msg.chat.id) == True and  q ==0:
            b = BotHandler()
            b.ShowMethods(msg)
            
@@ -54,7 +55,10 @@ def myid(msg):
 
 @bot.message_handler(commands=['schedule'])
 def Schedule(msg):
-    
+    d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
     chid = msg.chat.id
     d = db.data()
     calender = d.retrunCalemdar(chid)
@@ -65,18 +69,24 @@ def Schedule(msg):
 @bot.message_handler(commands=['absence']) # done
 def abs(msg):
    
-
+    d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
     bo = BotHandler()
     bo.NecessaryInformation(msg,'absence')
     del bo
  
 
-@bot.message_handler(commands=['greads']) # done
+@bot.message_handler(commands=['grades']) # done
 def greads(msg):
-   
+    d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
 
     bo = BotHandler()
-    bo.NecessaryInformation(msg,'greads')
+    bo.NecessaryInformation(msg,'grades')
     del bo
 
 
@@ -84,6 +94,10 @@ def greads(msg):
 
 @bot.message_handler(commands=['final'])
 def final(msg):
+    d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
     chid = msg.chat.id  # chat id
     d = db.data()  # object from database class
     
@@ -100,8 +114,13 @@ def final(msg):
 
 @bot.message_handler(commands=['gpa'])
 def gpa(msg):
-    chid = msg.chat.id
     d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
+     
+    chid = msg.chat.id
+   
     botHand = BotHandler()  # create object from Bot Handler
    
   
@@ -113,6 +132,14 @@ def gpa(msg):
         botHand.editrate(msg, chid)
 
 
+
+@bot.message_handler(commands=['evaluation'])
+def docum(msg):
+    d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
+    bot.reply_to(msg,'تقييم المقررات غير متاح')
 
 
 class BotHandler():
@@ -128,7 +155,7 @@ class BotHandler():
             if Type =='absence':
                 self.img = self.Qu.absences(user,pas)
                 bot.send_photo(msg.chat.id, self.img)  # send absences img
-            if Type =='greads':
+            if Type =='grades':
                 self.img = self.Qu.Greads(user,pas)
                 bot.send_photo(msg.chat.id, self.img)  # send absences img
             if Type=='gpa':
@@ -160,10 +187,10 @@ class BotHandler():
                     
     def secondM(self,msg,Type):
                 key = msg.text
-                print(key)
+               
                 hash = encode.hash1(key)
                 self.d= db.data()
-                print(hash)
+               
                 if hash != self.d.getKey(msg.chat.id):
                     
                         bot.send_message(msg.chat.id,'أعد ادخال الرمز')
@@ -181,8 +208,7 @@ class BotHandler():
                 self.markup = types.ReplyKeyboardMarkup()
                 self.methodOne = types.KeyboardButton('1')
                 self.methodTwo = types.KeyboardButton('2')
-                self.methodThree = types.KeyboardButton('3')
-                self.markup.row(self.methodOne, self.methodTwo, self.methodThree)
+                self.markup.row(self.methodOne, self.methodTwo)
                 bot.send_message(msg.chat.id, message.loginMsg, reply_markup=self.markup)
                 bot.register_next_step_handler(msg,self.methods,self.markup)
                 
