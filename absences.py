@@ -122,10 +122,21 @@ class gpaUser:
                 if self.c == self.i[0]:
                     driver.find_element(By.CSS_SELECTOR, "tr:nth-child({}) > td:nth-child(6) > input".format(course.index(self.i)+1)).click()
 
+        
+        def tg(self,p,t):
+                        
+            for x in t :
+                if p >=x :
+                     return (tG[x])
+                    
+    
 
         def gg(self,cou,g):
             grades = {'A+':5,'A':4.75,'B+':4.5,'B':4,'C+':3.5,'C':3,'D+':2.5,'D':2,'F':1}
-
+            tG = {4.5:'ممتاز',  
+                  3.75:'جيد جداََ'
+                  ,2.75:'جيد'
+                  ,2 : 'مقبول'}
             self.gpa={
                 'gpaKnow':[],
                 'gpanew':[],
@@ -142,25 +153,31 @@ class gpaUser:
             gnew = (x+float(g[1])) / ( tt+int(g[0]) )
           
             p = str (round( float( g[1]) ,3))
-          
+            
+            pp = self.tg(gold,tG)
             self.gpa['gpaKnow'].append (p) 
             self.gpa['gpaKnow'].append(g[0])
             g1 = round(gold,3)
+           
             self.gpa['gpaKnow'].append(g1)
-            self.gpa['gpaKnow'].append('جيد')
+            self.gpa['gpaKnow'].append(pp)
             
             p1 = str(round( ( x+ float(g[1]) ) , 3  ) )
+            pp = self.tg(gnew,tG)
             self.gpa['gpanew'].append( p1 ) 
             self.gpa['gpanew'].append( (tt+int(g[0]) ))
+           
             g2 = round(gnew,3)
+           
             self.gpa['gpanew'].append( g2)
-            self.gpa['gpanew'].append( 'جيد')
+            self.gpa['gpanew'].append( pp)
             
+            pp = self.tg(term,tG)
             self.gpa['gpaTerm'].append( x)
             self.gpa['gpaTerm'].append(tt)
             g3 = round(term,3)
             self.gpa['gpaTerm'].append(g3)
-            self.gpa['gpaTerm'].append('جيد')
+            self.gpa['gpaTerm'].append(pp)
            
             return self.gpa
             
@@ -185,3 +202,16 @@ class gpaUser:
 
 
 
+
+
+tG = {4.5:'ممتاز',  
+                  3.75:'جيد جداََ'
+                  ,2.75:'جيد'
+                  ,2 : 'مقبول'}
+m = 4.49
+
+for x in tG :
+    if m >=x :
+        print(tG[x])
+        break
+    
