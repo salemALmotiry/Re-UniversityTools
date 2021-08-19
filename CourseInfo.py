@@ -24,7 +24,7 @@ QuList = {
 
     }
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-# options.add_argument("--headless")
+options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
@@ -97,7 +97,7 @@ class qu :
                 self.urlQu()
                 self.login(user,pas)
                 self.reachOut(QuList['grades'])
-                self.driver.set_window_size(1024, 600)
+                self.driver.set_window_size(1500, 900)
                 self.driver.maximize_window()
                 time.sleep(0.4)
                 self.e = self.driver.find_element_by_css_selector('body > div.intrPage.main > div.container > div.content > div.sysContent.col-sm-9 > table > tbody > tr:nth-child(3)').screenshot_as_png

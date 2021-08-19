@@ -18,10 +18,10 @@ user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 options = webdriver.ChromeOptions()
 
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-sh-usage")
-options.add_argument("--disable-dev-shm-usage")
+# options.add_argument("--headless")
+# options.add_argument("--no-sandbox")
+# options.add_argument("--disable-dev-sh-usage")
+# options.add_argument("--disable-dev-shm-usage")
 class gpaUser:
         def login(self,user,pas):
 
@@ -123,18 +123,65 @@ class gpaUser:
                     driver.find_element(By.CSS_SELECTOR, "tr:nth-child({}) > td:nth-child(6) > input".format(course.index(self.i)+1)).click()
 
 
+        def gg(self,cou,g):
+            grades = {'A+':5,'A':4.75,'B+':4.5,'B':4,'C+':3.5,'C':3,'D+':2.5,'D':2,'F':1}
 
+            self.gpa={
+                'gpaKnow':[],
+                'gpanew':[],
+                'gpaTerm':[]
+            }
+            tt = 0 
+            x = 0 
+            for i in cou :
+                x += grades[i[3]] * float(i[2])
+                tt += int(i[2])
+                
+            term = x/tt
+            gold = float(g[1])/int(g[0])
+            gnew = (x+float(g[1])) / ( tt+int(g[0]) )
+          
+            p = str (round( float( g[1]) ,3))
+          
+            self.gpa['gpaKnow'].append (p) 
+            self.gpa['gpaKnow'].append(g[0])
+            g1 = round(gold,3)
+            self.gpa['gpaKnow'].append(g1)
+            self.gpa['gpaKnow'].append('جيد')
+            
+            p1 = str(round( ( x+ float(g[1]) ) , 3  ) )
+            self.gpa['gpanew'].append( p1 ) 
+            self.gpa['gpanew'].append( (tt+int(g[0]) ))
+            g2 = round(gnew,3)
+            self.gpa['gpanew'].append( g2)
+            self.gpa['gpanew'].append( 'جيد')
+            
+            self.gpa['gpaTerm'].append( x)
+            self.gpa['gpaTerm'].append(tt)
+            g3 = round(term,3)
+            self.gpa['gpaTerm'].append(g3)
+            self.gpa['gpaTerm'].append('جيد')
+           
+            return self.gpa
+            
         def setup(self,cou,user,pas):
-
             self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=options)
             self.driver.get("https://stu-gate.qu.edu.sa/qu/ui/home.faces")
             time.sleep(0.5)
             self.GPAInfo= self.login(user,pas)
-            self.driver.get('https://qu.edu.sa/GPA.aspx')
-            time.sleep(1)
-            self.putGPA(self.GPAInfo)
-            time.sleep(0.5)
-            self.ggpa = self.GPA(cou)
-            # removeC(cou,'MATH329')
-            self.driver.close()
+            
+            # self.driver.get('https://qu.edu.sa/GPA.aspx')
+            # time.sleep(1)
+            # self.putGPA(self.GPAInfo)
+            # time.sleep(0.5)
+            self.ggpa = self.gg(cou,self.GPAInfo)
+            # # removeC(cou,'MATH329')
+            # self.driver.close()
             return self.ggpa
+            
+
+
+
+
+
+

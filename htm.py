@@ -11,7 +11,7 @@ htm = '''<!DOCTYPE html>
                                     border-collapse: collapse;
 
                                     margin: 25px 0;
-                                    font-size: 5.3em;
+                                    font-size: 4.4em;
                                     font-family: sans-serif;
                                     width : 900;
                                     height:700;

@@ -121,7 +121,7 @@ class data:
 
         x = pathlib.Path('%s.html'%chid).absolute()
         y = 'file://'+str(x)
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=options)
 
         self.driver.get(y)
 
@@ -245,12 +245,18 @@ class data:
                 self.uploadcalendar(chid,user)
 
 
-
+    def cleardeg(self,id):
+        self._connect()
+        self.cursor= self.connection.cursor()
+        self.cursor.execute("update courses set `Exp deg` =' ' where chat_id = {} ".format(id))
+        self.connection.commit()
+        self.connection.close()
+        
     def importCourse(self,chid):
 
         self._connect()
         self.cursor= self.connection.cursor()
-        self.cursor.execute("SELECT id,`CRSE`,Hours,`exp deg` from courses where chat_id = {} and (Hours != '' and Hours !=' ' ) ".format(chid))
+        self.cursor.execute("SELECT id,`CRSE`,Hours,`exp deg` ,`crse name`from courses where chat_id = {} and (Hours != '' and Hours !=' ' ) ".format(chid))
         self.tem = self.cursor.fetchall()
         self.connection.close()
         return self.tem

@@ -97,6 +97,24 @@ def final(msg):
     del d
 
 
+
+@bot.message_handler(commands=['gpa'])
+def gpa(msg):
+    chid = msg.chat.id
+    d = db.data()  # create object from database class
+    botHand = BotHandler()  # create object from Bot Handler
+   
+  
+    if d.check_if_deg_empty(chid) == 1:  # check if any course rate empty
+        botHand.printTable(chid)
+        botHand.newRate(msg, chid)
+    else:
+
+        botHand.editrate(msg, chid)
+
+
+
+
 class BotHandler():
     def __init__(self):
         self.info = list()
@@ -106,13 +124,23 @@ class BotHandler():
             
                  
             self.Qu = CourseInfo.qu()
-            
+            self.d = db.data()
             if Type =='abs':
                 self.img = self.Qu.absences(user,pas)
                 bot.send_photo(msg.chat.id, self.img)  # send absences img
             if Type =='greads':
                 self.img = self.Qu.Greads(user,pas)
                 bot.send_photo(msg.chat.id, self.img)  # send absences img
+            if Type=='gpa':
+                        self.info = self.d.getUserinfo(msg.chat.id)
+                        self.d.importCoursesForGPA(msg.chat.id,user, pas)   
+                        image = Image.open('%s.png'%msg.chat.id)
+                        bot.send_photo(msg.chat.id,image)
+                        os.remove('%s.png'%msg.chat.id)
+                        
+                        image = Image.open('%sp.png'%msg.chat.id)
+                        bot.send_photo(msg.chat.id,image)
+                        os.remove('%sp.png'%msg.chat.id)
             
             
             
@@ -239,7 +267,114 @@ class BotHandler():
        self.uoload.insertCoursesIntoTable(courses,self.chid,user)
        bot.send_message(self.chid, "تم الأنتهاء من أعداد البوت تستطيع استخدامه ")
    
+    i = 1
+    rows = 0
+    def printTable(self, chid):
+
+        self.v = db.data()
+        table = PrettyTable()
+        self.c = self.v.importCourse(chid)
+        table.title = 'Courses'
+        table.field_names = ['crse','H','deg']
+        self.co = list()
+        for x in self.c :
+            table.add_row([ x[1],x[2],x[3]  ])
+            self.co.append(x[4])
+        
+        # table = from_db_cursor(self.c)
+      
+        table.hrules = ALL
+        bot.send_message(chid, '\>\n``` {} ```\n\>'.format(table), parse_mode='MarkdownV2')
+
+        self.ids = self.v.retrunids(chid)
+        self.rows = len(self.ids)
    
+    def newRate(self, message, chid):
+        if self.i <= self.rows:
+            global markup
+
+            markup = types.ReplyKeyboardMarkup()
+            itembtnap = types.KeyboardButton('A+')
+            itembtna = types.KeyboardButton('A')
+            itembtnbp = types.KeyboardButton('B+')
+            itembtnb = types.KeyboardButton('B')
+            itembtncp = types.KeyboardButton('C+')
+            itembtnc = types.KeyboardButton('C')
+            itembtndp = types.KeyboardButton('D+')
+            itembtnd = types.KeyboardButton('D')
+            itembtnf = types.KeyboardButton('F')
+            markup.row(itembtnap, itembtna)
+            markup.row(itembtnbp, itembtnb, itembtncp)
+            markup.row(itembtnc, itembtndp, itembtnd)
+            markup.row(itembtnf)
+            bot.send_message(chid, "توقعاتك لمادة : {} ".format(self.co[self.i - 1]), reply_markup=markup)
+
+            bot.register_next_step_handler(message, self.dealwithCourseTaple)
+        if self.i > self.rows:
+            markup = types.ReplyKeyboardRemove()
+            bot.send_message(chid, "انتهيت من تعيين الدرجات", reply_markup=markup)
+            self.uploadrate(message, chid)
+
+    x = list()
+
+    # this function deal with rate of course when ends
+    def dealwithCourseTaple(self, message):
+
+        if self.i <= self.rows:
+
+            self.x.append([self.ids[self.i - 1], message.text])
+            self.i += 1
+            self.newRate(message, message.chat.id)
+
+        elif message.text == "سلام":
+            bot.reply_to(message, "done")
+
+    # upload rate into data base
+    def uploadrate(self, message, chid):
+
+        self.y = db.data()
+        self.y.insertRate(self.x)
+        self.printTable(chid)
+        self.x.clear()
+        self.markup = types.ReplyKeyboardMarkup()
+        self.methodOne = types.KeyboardButton('احسب معدلي')
+        self.methodTwo = types.KeyboardButton('إعادة تعين الدرجات')
+        self.markup.row(self.methodOne, self.methodTwo)
+        bot.send_message(chid,'أختر ماذا تريد', reply_markup=self.markup)
+      
+        bot.register_next_step_handler(message, self.resetRate)
+      
+        del self.y
+
+    # calc gpa and make change on rate of courses
+    def resetRate(self, msg):
+        markup = types.ReplyKeyboardRemove()
+     
+        if msg.text == 'احسب معدلي':
+            bot.send_message(msg.chat.id, "حساب المعدل", reply_markup=markup)
+            self.NecessaryInformation(msg,'gpa')
+            
+           
+            # bot.register_next_step_handler(msg , )
+        elif msg.text == 'إعادة تعين الدرجات':
+            self.d = db.data()
+            self.d.cleardeg(msg.chat.id)
+            bot.send_message(msg.chat.id, "تمت اعادة التعيين",reply_markup=markup)
+        
+
+    
+    # If the courses have already been evaluated the now cgange start from here
+    def editrate(self, message, chid):
+
+        self.printTable(chid)
+        self.i = self.rows + 1
+        self.markup = types.ReplyKeyboardMarkup()
+        self.methodOne = types.KeyboardButton('احسب معدلي')
+        self.methodTwo = types.KeyboardButton('إعادة تعين الدرجات')
+        self.markup.row(self.methodOne, self.methodTwo)
+        bot.send_message(chid,'أختر ماذا تريد', reply_markup=self.markup)
+        bot.register_next_step_handler(message, self.resetRate)
+        
     
    
 bot.polling()
