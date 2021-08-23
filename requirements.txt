@@ -13,10 +13,9 @@ cryptocode==0.1
 cryptography==3.4.7
 distlib==0.3.1
 
-filelock==3.0.12
-
 hijri-converter==2.1.2
 
+idna==2.10
 image==1.5.33
 IMAPClient==2.2.0
 
@@ -31,12 +30,13 @@ mysql-connector-python==8.0.25
 
 parso==0.7.1
 
+
 pefile==2019.4.18
 Pillow==8.2.0
 pluggy==0.13.1
 prettytable==2.1.0
 protobuf==3.17.1
-PyAutoGUI==0.9.52
+PyAutoGUI==0.9.53
 pycparser==2.20
 pycryptodome==3.10.1
 pycryptodomex==3.10.1
@@ -53,7 +53,7 @@ pyTelegramBotAPI==3.7.9
 python-dotenv==0.18.0
 python-jsonrpc-server==0.4.0
 python-language-server==0.36.2
-PyTweening==1.0.3
+
 pytz==2021.1
 pywin32-ctypes==0.2.0
 requests==2.25.1
@@ -66,12 +66,12 @@ sqlparse==0.4.1
 
 typed-ast==1.4.3
 typing-extensions==3.7.4.3
-ujson==4.0.2
+
 urllib3==1.25.9
 virtualenv==20.4.4
 wcwidth==0.2.5
 webassets==2.0
 Werkzeug==1.0.1
-wkhtmltopdf==0.2
+
 WTForms==2.3.3
 xmltodict==0.12.0

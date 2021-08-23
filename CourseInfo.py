@@ -13,7 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
-
+import pyautogui
 
 options = Options()
 QuList = {
@@ -28,7 +28,12 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
-
+options.add_experimental_option('prefs', {
+"download.default_directory": "D:\Re-UniversityTools", #Change default directory for downloads
+"download.prompt_for_download": False, #To auto download the file
+"download.directory_upgrade": True,
+"plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
+})
 class qu :
     def urlQu(self):
         self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=options)
@@ -170,6 +175,18 @@ class qu :
                         # driver.FindElement(By.CssSelector("#frm > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a")).Click()
                         # time.sleep(0.4)
    
+    def douc(self,user , pas):
+         self.urlQu()
+         self.login(user,pas)
+         self.reachOut(QuList['docum'])
+ 
+         self.driver.find_element(By.ID, "myForm:printTxt9").click()
+         pyautogui.press('enter')
+         time.sleep(10)
+         self.driver.close()
+
+        
+    
     def clo(self):
         self.driver.close()
    
@@ -180,5 +197,4 @@ class qu :
         
         
         
-    
    

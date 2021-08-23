@@ -454,7 +454,8 @@ class data:
 
 
 
-
+    
+     
 
 
     def takenote(self,chid,note):
@@ -506,7 +507,24 @@ class data:
     def close(self):
         self.connection.close()
 
-
+   
+    def deleteCourses(self,id,):
+        self._connect()
+        self.cursor= self.connection.cursor()
+        self.sql = " ALTER TABLE courses AUTO_INCREMENT = 1;"
+        
+        self.cursor.execute(self.sql)
+       
+        self.sql = "delete from courses where chat_id = %s;"%id
+        
+        self.cursor.execute(self.sql)
+        self.sql = "delete from calendar where chat_id = %s;"%id
+        
+        self.cursor.execute(self.sql)
+       
+       
+        self.connection.commit()
+        self.connection.close()
 
 
 # x = ' 8-05-1443 [ 10:30 ص-12:30 م]'

@@ -1,5 +1,6 @@
 from datetime import datetime
 from re import T, escape
+from time import sleep
 from typing import List
 import telebot
 import os
@@ -140,8 +141,24 @@ def docum(msg):
          bot.reply_to(msg,'ليس لديك صلاحيات')
          return
     bot.reply_to(msg,'تقييم المقررات غير متاح')
+ 
 
 
+@bot.message_handler(commands=['reset'])
+def reset(msg):
+    d = db.data()  # create object from database class
+    if d.uesrActive(msg.chat.id)==0:
+         bot.reply_to(msg,'ليس لديك صلاحيات')
+         return
+    botHand = BotHandler()  # create object from Bot Handler
+    botHand.NecessaryInformation(msg,'reset')
+    
+
+
+@bot.message_handler(commands=['docum'])
+def docum(msg):
+  both = BotHandler()
+  both.NecessaryInformation(msg,'docum')  
 class BotHandler():
     def __init__(self):
         self.info = list()
@@ -169,6 +186,16 @@ class BotHandler():
                         bot.send_photo(msg.chat.id,image)
                         os.remove('%sp.png'%msg.chat.id)
             
+            if Type == 'reset':
+                bot.reply_to(msg,'يتم إعادة التعيين الرجاء الأنتظار')
+                self.d.deleteCourses(msg.chat.id)
+                self.course = self.Qu.getsCourses(user,pas)
+                self.d.insertCoursesIntoTable(self.course,msg.chat.id,user)
+                bot.send_message(msg.chat.id,'تمت إعادة التعيين ')
+            if Type == 'docum':
+                    self.Qu.douc(user,pas) 
+                    f  = open(r'D:\Re-UniversityTools\2021082412000001.pdf','rb')
+                    bot.send_document(msg.chat.id,f)
             
             
     def NecessaryInformation(self,msg,Type):
@@ -299,9 +326,12 @@ class BotHandler():
         self.v = db.data()
         table = PrettyTable()
         self.c = self.v.importCourse(chid)
+       
         table.title = 'Courses'
+       
         table.field_names = ['crse','H','deg']
         self.co = list()
+       
         for x in self.c :
             table.add_row([ x[1],x[2],x[3]  ])
             self.co.append(x[4])
@@ -309,10 +339,11 @@ class BotHandler():
         # table = from_db_cursor(self.c)
       
         table.hrules = ALL
-        bot.send_message(chid, '\>\n``` {} ```\n\>'.format(table), parse_mode='MarkdownV2')
-
+        
         self.ids = self.v.retrunids(chid)
         self.rows = len(self.ids)
+        bot.send_message(chid, '\>\n``` {} ```\n\>'.format(table), parse_mode='MarkdownV2')
+
    
     def newRate(self, message, chid):
         if self.i <= self.rows:
@@ -351,22 +382,20 @@ class BotHandler():
             self.i += 1
             self.newRate(message, message.chat.id)
 
-        elif message.text == "سلام":
-            bot.reply_to(message, "done")
 
     # upload rate into data base
     def uploadrate(self, message, chid):
-
+ 
         self.y = db.data()
         self.y.insertRate(self.x)
         self.printTable(chid)
-        self.x.clear()
+        
         self.markup = types.ReplyKeyboardMarkup()
         self.methodOne = types.KeyboardButton('احسب معدلي')
         self.methodTwo = types.KeyboardButton('إعادة تعين الدرجات')
         self.markup.row(self.methodOne, self.methodTwo)
         bot.send_message(chid,'أختر ماذا تريد', reply_markup=self.markup)
-      
+        self.x.clear()
         bot.register_next_step_handler(message, self.resetRate)
       
         del self.y
@@ -408,8 +437,8 @@ if __name__ == "__main__":
     while True:
         try:
             bot.polling(none_stop=True)
-            # ConnectionError and ReadTimeout because of possible timout of the requests library
-            # maybe there are others, therefore Exception
+            #ConnectionError and ReadTimeout because of possible timout of the requests library
+            #maybe there are others, therefore Exception
         except Exception:
             time.sleep(7)
             print("there is erorr")
