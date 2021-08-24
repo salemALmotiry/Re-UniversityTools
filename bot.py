@@ -41,6 +41,7 @@ def start(msg):
 @bot.message_handler(commands=['active'])
 def act(msg):          
            if msg.chat.id==340095920:
+                   bot.reply_to(msg,'ارسل')
                    bot.register_next_step_handler(msg,ActivateID)
                    
 def ActivateID(msg):   
