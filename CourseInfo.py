@@ -24,7 +24,7 @@ QuList = {
 
     }
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-options.add_argument("--headless")
+# options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
@@ -181,9 +181,10 @@ class qu :
          self.reachOut(QuList['docum'])
  
          self.driver.find_element(By.ID, "myForm:printTxt9").click()
-         pyautogui.press('enter')
-         time.sleep(10)
-         self.driver.close()
+         self.driver.get(self.driver.current_url)
+         time.sleep(3)
+         self.driver.quit()
+         
 
         
     

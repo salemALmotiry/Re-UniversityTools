@@ -36,7 +36,7 @@ Pillow==8.2.0
 pluggy==0.13.1
 prettytable==2.1.0
 protobuf==3.17.1
-PyAutoGUI==0.9.53
+
 pycparser==2.20
 pycryptodome==3.10.1
 pycryptodomex==3.10.1
