@@ -196,6 +196,7 @@ class BotHandler():
                     self.Qu.douc(user,pas) 
                     f  = open(r'D:\Re-UniversityTools\2021082412000001.pdf','rb')
                     bot.send_document(msg.chat.id,f)
+                    os.remove(r'D:\Re-UniversityTools\2021082412000001.pdf')
             
             
     def NecessaryInformation(self,msg,Type):
