@@ -174,16 +174,7 @@ class qu :
                         # driver.FindElement(By.CssSelector("#frm > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a")).Click()
                         # time.sleep(0.4)
    
-    def douc(self,user , pas):
-         self.urlQu()
-         self.login(user,pas)
-         self.reachOut(QuList['docum'])
- 
-         self.driver.find_element(By.ID, "myForm:printTxt9").click()
-         self.driver.get(self.driver.current_url)
-         time.sleep(3)
-         self.driver.quit()
-         
+  
 
         
     
