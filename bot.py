@@ -157,12 +157,6 @@ def reset(msg):
     
 
 
-@bot.message_handler(commands=['docum'])
-def docum(msg):
-  print(pathlib.Path('active.txt').absolute())
-  both = BotHandler()
-  both.NecessaryInformation(msg,'docum')  
-  
 class BotHandler():
     def __init__(self):
         self.info = list()
