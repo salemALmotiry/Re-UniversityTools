@@ -16,10 +16,11 @@ from bs4 import BeautifulSoup
 
 options = Options()
 QuList = {
-            'course':['menuForm:menuTable:1:categories','menuForm:menuTable:1:services:1:serTextStudSchedule'],
+              'course':['menuForm:menuTable:2:categories','menuForm:menuTable:2:services:1:serTextStudSchedule'],
             'absences':['menuForm:menuTable:5:categories','menuForm:menuTable:5:services:3:serTextStudAbs'],
-            'grades':['menuForm:menuTable:1:categories','menuForm:menuTable:1:services:2:serTextCrsRes'],
+            'grades':['menuForm:menuTable:2:categories','menuForm:menuTable:2:services:2:serTextCrsRes'],
             'docum':['menuForm:menuTable:5:categories','menuForm:menuTable:5:services:6:stdReportsTxt']
+
 
     }
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
