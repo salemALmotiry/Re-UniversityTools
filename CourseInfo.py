@@ -17,23 +17,23 @@ from bs4 import BeautifulSoup
 options = Options()
 QuList = {
               'course':['menuForm:menuTable:2:categories','menuForm:menuTable:2:services:1:serTextStudSchedule'],
-            'absences':['menuForm:menuTable:5:categories','menuForm:menuTable:5:services:3:serTextStudAbs'],
+             'absences':['menuForm:menuTable:5:categories','menuForm:menuTable:5:services:3:serTextStudAbs'],
             'grades':['menuForm:menuTable:2:categories','menuForm:menuTable:2:services:2:serTextCrsRes'],
             'docum':['menuForm:menuTable:5:categories','menuForm:menuTable:5:services:6:stdReportsTxt']
 
 
     }
-options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+options = webdriver.ChromeOptions()
+
+# options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+# options.add_argument("f'user-agent={user_agent}'")
 options.add_argument("--headless")
-options.add_argument("--no-sandbox")
+# options.add_argument("--window-size=1920,1080'")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
-options.add_experimental_option('prefs', {
-"download.default_directory": "D:\Re-UniversityTools", #Change default directory for downloads
-"download.prompt_for_download": False, #To auto download the file
-"download.directory_upgrade": True,
-"plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
-})
+
 class qu :
     def urlQu(self):
         self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=options)
