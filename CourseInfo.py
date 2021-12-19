@@ -14,7 +14,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
 
-options = Options()
 QuList = {
               'course':['menuForm:menuTable:2:categories','menuForm:menuTable:2:services:1:serTextStudSchedule'],
              'absences':['menuForm:menuTable:5:categories','menuForm:menuTable:5:services:3:serTextStudAbs'],
@@ -27,28 +26,33 @@ QuList = {
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
 options = webdriver.ChromeOptions()
 
-# options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-# options.add_argument("f'user-agent={user_agent}'")
+options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 options.add_argument("--headless")
-# options.add_argument("--window-size=1920,1080'")
+options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
-
 class qu :
     def urlQu(self):
         self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=options)
-        self.driver.get("https://stu-gate.qu.edu.sa/qu/ui/home.faces")
-        time.sleep(0.3)
+        self.driver.get("http://stu-gate.qu.edu.sa/qu/ui/home.faces")#https://stu-gate.qu.edu.sa/qu/ui/home.faces
+        time.sleep(0.5)
     
     def login(self,user , pas):
-        self.driver.find_element_by_id('loginForm:username').send_keys(user)
-        self.driver.find_element_by_id('loginForm:password').send_keys(pas)
+        self.driver.set_window_size(1920,1080)
+        self.driver.maximize_window()
+
+        self.driver.find_element_by_css_selector("#loginForm\:username").send_keys(user)
+        self.driver.find_element_by_css_selector("#loginForm\:password").send_keys(pas)
+
         time.sleep(0.4)
-        self.driver.find_element_by_id("loginForm:loginLink").click()
-        time.sleep(0.5)
+        self.driver.find_element_by_css_selector("#loginForm\:loginLink").click()
+        time.sleep(0.3)
+        
+
 
     def reachOut(self,idf):  
-        
+       
+
         self.driver.find_element_by_id(idf[0]).click()
         time.sleep(0.5)
         self.driver.find_element_by_id(idf[1]).click()
@@ -94,10 +98,9 @@ class qu :
     def absences(self,user,pas):
                 self.urlQu()
                 self.login(user,pas)
+                self.driver.get_screenshot_as_file("screensho3.png")
                 self.reachOut(QuList['absences'])
-                self.driver.set_window_size(2550, 1900)
-                self.driver.maximize_window()
-                time.sleep(0.4)
+                
                 self.e = self.driver.find_element_by_css_selector('body > div.intrPage.main > div.container > div.content > div.sysContent.col-sm-9 > table > tbody > tr:nth-child(3)').screenshot_as_png
                 self.image = Image.open(io.BytesIO(self.e))
                 self.driver.close()

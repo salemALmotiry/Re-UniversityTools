@@ -467,37 +467,6 @@ class data:
      
 
 
-    def takenote(self,chid,note):
-        self._connect()
-        self.cursor= self.connection.cursor()
-        self.sql = "insert into  notes values (%s , %s)"
-        self.val = (chid,note)
-        self.cursor.execute(self.sql , self.val)
-
-        self.connection.commit()
-        self.connection.close()
-
-
-
-    def importNote(self,chid):
-            self._connect()
-            self.cursor= self.connection.cursor()
-
-            self.cursor.execute('select note from notes where chat_id = {};'.format(chid))
-            self.notes = self.cursor.fetchall()
-
-            self.msg = str()
-            for self.p in self.notes:
-                    self.msg += str('\n'+self.p[0])
-            self.connection.close()
-
-            return self.msg
-
-
-    
-
- 
-
 
 
     def check_if_deg_empty(self,chid):

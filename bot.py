@@ -512,11 +512,12 @@ class BotHandler():
 if __name__ == "__main__":    
    
    
-    # while True:
-    #     try:
+    while True:
+        try:
             bot.polling(none_stop=True)
             #ConnectionError and ReadTimeout because of possible timout of the requests library
             #maybe there are others, therefore Exception
-        # except Exception:
-        #     time.sleep(4)
-        #     print("there is erorr")
+        except Exception as e :
+           
+            print(e)
+            time.sleep(2)

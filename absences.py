@@ -14,13 +14,14 @@ import time
 from selenium.webdriver.support.ui import Select
 from urllib3 import request
 
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
 options = webdriver.ChromeOptions()
 
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-sh-usage")
+options.add_argument("f'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'")
 options.add_argument("--disable-dev-shm-usage")
 class gpaUser:
         def login(self,user,pas):
