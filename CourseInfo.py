@@ -43,10 +43,12 @@ class qu :
     def login(self,user , pas):
         self.driver.find_element_by_id('loginForm:username').send_keys(user)
         self.driver.find_element_by_id('loginForm:password').send_keys(pas)
-        self.driver.find_element_by_name("loginForm:loginLink").click()
+        time.sleep(0.4)
+        self.driver.find_element_by_id("loginForm:loginLink").click()
         time.sleep(0.5)
 
     def reachOut(self,idf):  
+        
         self.driver.find_element_by_id(idf[0]).click()
         time.sleep(0.5)
         self.driver.find_element_by_id(idf[1]).click()

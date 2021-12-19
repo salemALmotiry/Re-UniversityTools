@@ -28,10 +28,10 @@ class gpaUser:
             self.driver.find_element_by_id('loginForm:username').send_keys(user)
             self.driver.find_element_by_id('loginForm:password').send_keys(pas)
             self.driver.find_element_by_name("loginForm:loginLink").click()
-            time.sleep(0.9)
-            self.driver.find_element(By.CSS_SELECTOR, "#menuForm\:menuTable\:1\:categories").click()
-            time.sleep(0.4)
-            self.driver.find_element(By.ID, "menuForm:menuTable:1:services:3:serTextTransAll").click()
+            time.sleep(1)
+            self.driver.find_element(By.CSS_SELECTOR, "#menuForm\\3AmenuTable\\3A 0\\3A categories span").click()
+            time.sleep(0.5)
+            self.driver.find_element(By.ID, "menuForm:menuTable:0:services:3:serTextTransAll").click()
 
             self.source = self.driver.page_source
             self.soup = BeautifulSoup(self.source, 'html.parser')
