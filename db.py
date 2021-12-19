@@ -280,7 +280,7 @@ class data:
     def importCourseEvl(self,chid):
         self._connect()
         self.cursor= self.connection.cursor()
-        self.cursor.execute("SELECT id,`CRSE`,`Actvity` from courses where chat_id = {}".format(chid))   
+        self.cursor.execute("SELECT `CRSE`,`CRSE NAME`,`Actvity` from courses where chat_id = {}".format(chid))   
         self.cus = self.cursor
         
         return self.cus
@@ -290,8 +290,17 @@ class data:
         self.cursor= self.connection.cursor()
      
         self.r = self.importCourseEvl(chid).fetchall()  
-     
-        return list(map(lambda x : x[1],self.r       ))
+        
+        lis = list()
+        lis2 = list()
+        for i in self.r :
+
+            s = i[1] + " => "+ i[0]  + ' , ' + i[2].replace('\n','')
+            lis.append(s)
+            lis2.append(i[0].replace('  ',' '))
+           
+        return lis,lis2
+
     
 
 

@@ -125,18 +125,18 @@ class qu :
             return self.image
         
     def Evaluation(self) :
-        self.driver.find_element_by_id("menuForm:menuTable:0:categories").click()
+        self.driver.find_element_by_id("menuForm:menuTable:1:categories").click()
         time.sleep(0.5)
 
-        self.driver.find_element_by_id("menuForm:menuTable:0:services:8:serTextEvaluation").click()
+        self.driver.find_element_by_id("menuForm:menuTable:1:services:8:serTextEvaluation").click()
         time.sleep(0.5)
 
     def auto (self,course):
 
 
-
+       
         for x in course :
-
+                        
                         self.Evaluation()
                         self.driver.find_element_by_link_text(x[0]).click()
 
@@ -166,14 +166,13 @@ class qu :
                                     tr = 2
                                     table = 6
                                     time.sleep(0.4)
+                        
                         self.driver.execute_script("window.scrollTo(1000,1300)")
                         time.sleep(0.4) ##frm > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a
                         self.driver.find_element_by_css_selector('#frm > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a').click()
+                      
                         time.sleep(0.5)
-                        # # //   driver.FindElement(By.CssSelector("a[href='javascript:submitForm(\\'/qu\')']")).Click()
-                        # # //      driver.FindElement(By.Id("frm:saveEval")).Click()
-                        # driver.FindElement(By.CssSelector("#frm > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a")).Click()
-                        # time.sleep(0.4)
+                       
    
   
 
@@ -184,9 +183,3 @@ class qu :
    
 
     
-  
-    
-        
-        
-        
-   

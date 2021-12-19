@@ -139,10 +139,17 @@ def gpa(msg):
 @bot.message_handler(commands=['evaluation'])
 def docum(msg):
     d = db.data()  # create object from database class
+    bo = BotHandler()
     if d.uesrActive(msg.chat.id)==0:
          bot.reply_to(msg,'ليس لديك صلاحيات')
          return
-    bot.reply_to(msg,'تقييم المقررات غير متاح')
+   
+   
+    bo.printtableforEvl(msg.chat.id)
+    
+    bo.newEvl(msg,msg.chat.id)
+    
+
  
 
 
@@ -160,7 +167,7 @@ def reset(msg):
 class BotHandler():
     def __init__(self):
         self.info = list()
-  
+    
     def handler(self,msg,user,pas,Type):
           
             
@@ -190,6 +197,10 @@ class BotHandler():
                 self.course = self.Qu.getsCourses(user,pas)
                 self.d.insertCoursesIntoTable(self.course,msg.chat.id,user)
                 bot.send_message(msg.chat.id,'تمت إعادة التعيين ')
+            if Type == 'Evl':
+                
+                 img = self.Qu.Eval(user,pas,self.x_Evl)
+                 bot.send_photo(msg.chat.id, img)  # send absences img
            
             
             
@@ -233,9 +244,81 @@ class BotHandler():
                 self.markup.row(self.methodOne, self.methodTwo)
                 bot.send_message(msg.chat.id, message.loginMsg, reply_markup=self.markup)
                 bot.register_next_step_handler(msg,self.methods,self.markup)
-                
 
-              
+
+    i_evl= 1
+    
+    row_evl=0
+    
+    
+    
+    def newEvl(self, message, chid):
+        if self.i_evl<= self.row_evl:
+            global markup
+
+            markup = types.ReplyKeyboardMarkup()
+            itembtnap = types.KeyboardButton('موافق بشدة')
+            itembtna = types.KeyboardButton('موافق')
+            itembtnbp = types.KeyboardButton('غير متأكد')
+            itembtnb = types.KeyboardButton('غير موافق')
+            itembtncp = types.KeyboardButton('غير موافق بشدة')
+            markup.row(itembtnap, itembtna)
+            markup.row(itembtnbp, itembtnb, itembtncp)
+            
+            bot.send_message(chid, "rate course {}".format(self.ids_evl[self.i_evl-1]), reply_markup=markup)
+
+            bot.register_next_step_handler(message, self.dealwithCourseTaple_Evl)
+        if self.i_evl> self.row_evl:
+            
+            evltonum  = {
+                            'موافق بشدة':2,
+                            'موافق':3,
+                            'غير متأكد':4,
+                            'غير موافق':5,
+                            'غير موافق بشدة':6
+                            
+                        }
+            markup = types.ReplyKeyboardRemove()
+          
+            bot.send_message(chid, "انتهيت من التعيين", reply_markup=markup)
+          
+            self.x_Evl = list(map(lambda q: (q[0] ,evltonum[q[1]]) , self.x_Evl ))
+          
+           
+            self.NecessaryInformation(message,'Evl')
+
+    
+    x_Evl = list()
+
+    # this function deal with rate of course when ends
+    def dealwithCourseTaple_Evl(self, message):
+
+        if self.i_evl <= self.row_evl:
+
+            self.x_Evl.append([self.ids_evl2[self.i_evl-1 ], message.text])
+            
+            self.i_evl += 1
+            self.newEvl(message, message.chat.id)
+
+        elif message.text == "سلام":
+            bot.reply_to(message, "done")
+
+    
+    
+    
+    
+    
+    
+    
+    def printtableforEvl(self,chid):
+        self.v = db.data()
+        self.ids_evl,self.ids_evl2 = self.v.retrunids_evl(chid)
+        self.row_evl= len(self.ids_evl2)
+        
+       
+    
+            
+
     def methods(self, msg, markup):
             self.method = msg.text  # method
           
@@ -429,11 +512,11 @@ class BotHandler():
 if __name__ == "__main__":    
    
    
-    while True:
-        try:
+    # while True:
+    #     try:
             bot.polling(none_stop=True)
             #ConnectionError and ReadTimeout because of possible timout of the requests library
             #maybe there are others, therefore Exception
-        except Exception:
-            time.sleep(7)
-            print("there is erorr")
+        # except Exception:
+        #     time.sleep(7)
+        #     print("there is erorr")

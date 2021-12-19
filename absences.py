@@ -18,7 +18,7 @@ user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 options = webdriver.ChromeOptions()
 
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-options.add_argument("--headless")
+# options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
@@ -188,12 +188,9 @@ class gpaUser:
             time.sleep(0.5)
             self.GPAInfo= self.login(user,pas)
             
-            # self.driver.get('https://qu.edu.sa/GPA.aspx')
-            # time.sleep(1)
-            # self.putGPA(self.GPAInfo)
-            # time.sleep(0.5)
+          
             self.ggpa = self.gg(cou,self.GPAInfo)
-            # # removeC(cou,'MATH329')
+           
             self.driver.close()
             return self.ggpa
             
