@@ -28,6 +28,7 @@ options = webdriver.ChromeOptions()
 
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 options.add_argument("--headless")
+options.add_argument('--disable-gpu')
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
@@ -63,9 +64,11 @@ class qu :
             self.login(user,pas)
             self.reachOut(QuList['course'])
             self.course = list()
+           
+
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
 
-            s = soup.find('table',{'id' : 'j_id_id241:dataTbl'}).find('tbody')
+            s = soup.find('table',{'id' : 'j_id_id250:dataTbl'}).find('tbody')
 
             i = 1
             for f in s.find_all('tr'):
@@ -73,26 +76,29 @@ class qu :
                     self.course.append([f.find('td', {'data-th': 'رمز المقرر'}).find('span', {'class': 'fontTextSmall'}).text
                                 ,f.find('td', {'data-th': 'اسم المقرر'}).find('span', {'class': 'fontTextSmall'}).text
                                 ,f.find('td', {'data-th': 'النشاط'}).text
-                                , f.select('#j_id_id241\:dataTbl > tbody > tr:nth-child(%s) > td:nth-child(6) > center' % i)[0].text.strip()
-                                ,f.select('#j_id_id241\:dataTbl > tbody > tr:nth-child(%s) > td:nth-child(9) > table > tbody > tr:nth-child(2) > td'%i)[0].text.strip()
+                                , f.select('#j_id_id250\:dataTbl > tbody > tr:nth-child(%s) > td:nth-child(6) > center' % i)[0].text.strip()
+                                ,f.select('#j_id_id250\:dataTbl > tbody > tr:nth-child(%s) > td:nth-child(9) > table > tbody > tr:nth-child(2) > td'%i)[0].text.strip()
                                 , ''
-                                , f.select('#j_id_id241\:dataTbl > tbody > tr:nth-child(%s) > td:nth-child(10) > center' % i)[ 0].text.strip()
+                                , f.select('#j_id_id250\:dataTbl > tbody > tr:nth-child(%s) > td:nth-child(10) > center' % i)[ 0].text.strip()
 
                                 ])
                     i = i  + 1
-                except:
+                except Exception as e:
+                    # print(e)
+                    # print("\n\n_______________________________________\n\n")
                     continue
                 
-            self.driver.find_element_by_id('j_id_id241:schdText').click()
+            self.driver.find_element_by_id('j_id_id250:schdText').click()
             time.sleep(1)
             self.driver.set_window_size(1200, 990)
             self.driver.maximize_window()
             time.sleep(0.4)
+           
             self.driver.execute_script("window.scrollTo(0, window.scrollY + 340)")
 
             self.element = self.driver.find_element_by_css_selector("#myForm").screenshot('{}.png'.format(user))
             self.driver.close()
-
+            
             return self.course
    
     def absences(self,user,pas):

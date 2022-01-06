@@ -22,11 +22,10 @@ from selenium.webdriver.chrome.options import Options
 options = Options()
 options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 options.add_argument("--headless")
+options.add_argument('--disable-gpu')
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-sh-usage")
 options.add_argument("--disable-dev-shm-usage")
-# options.add_argument("--start-maximized")
-# options.add_argument("window-size=2560,1440")
 
 
 
